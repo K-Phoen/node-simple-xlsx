@@ -22,6 +22,16 @@ function XlsxWriter() {
     this.cellLabelMap = {};
 }
 
+XlsxWriter.write = function(filename, data, callback) {
+    var writer = new XlsxWriter();
+
+    data.forEach(function(row) {
+        writer.addRow(row);
+    });
+
+    writer.pack(filename, callback);
+};
+
 XlsxWriter.prototype.pack = function(filename, callback) {
     var dimensions = this.dimensions(this.currentRow, this.cellMap.length),
         zip = new AdmZip(),
