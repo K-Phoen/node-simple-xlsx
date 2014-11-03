@@ -1,7 +1,7 @@
 {
   "name": "node-simple-xlsx",
   "description": "Simple XLSX writer.",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/K-Phoen/node-simple-xlsx",
   "author": {
     "name": "Kévin Gomez",
