@@ -1,11 +1,10 @@
 var fs     = require('fs'),
     path   = require('path'),
-    async  = require('async'),
     AdmZip = require('adm-zip'),
 
-    blobs = require('./blobs'),
+    blobs  = require('./blobs');
 
-    numberRegex = /^[1-9\.][\d\.]+$/;
+const NUMBER_REGEX = /^[1-9\.][\d\.]+$/;
 
 exports = module.exports = XlsxWriter;
 
@@ -23,54 +22,41 @@ function XlsxWriter() {
     this.cellLabelMap = {};
 }
 
-XlsxWriter.prototype.pack = function(filename, cb) {
+XlsxWriter.prototype.pack = function(filename, callback) {
     var dimensions = this.dimensions(this.currentRow, this.cellMap.length),
         zip = new AdmZip(),
         self = this;
 
-    return async.series([
-            function(cb) {
-                var string, stringTable, _i, _len, _ref;
-                stringTable = '';
-                _ref = self.strings;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    string = _ref[_i];
-                    stringTable += blobs.string(self.escapeXml(string));
-                }
-                zip.addFile('xl/sharedStrings.xml', new Buffer(blobs.stringsHeader(self.strings.length) + stringTable + blobs.stringsFooter));
+    // xl/sharedstrings.xml
+    var stringTable = '';
+    this.strings.forEach(function(string) {
+        stringTable += blobs.string(self.escapeXml(string));
+    });
+    zip.addFile('xl/sharedStrings.xml', new Buffer(blobs.stringsHeader(this.strings.length) + stringTable + blobs.stringsFooter));
 
-                cb();
-            }, function(cb) {
-                zip.addFile('[Content_Types].xml', new Buffer(blobs.contentTypes));
+    // [Content_types].xml
+    zip.addFile('[Content_Types].xml', new Buffer(blobs.contentTypes));
 
-                cb();
-            }, function(cb) {
-                zip.addFile('_rels/.rels', new Buffer(blobs.rels));
+    // _rels/.rels
+    zip.addFile('_rels/.rels', new Buffer(blobs.rels));
 
-                cb();
-            }, function(cb) {
-                zip.addFile('xl/workbook.xml', new Buffer(blobs.workbook));
+    // xl/workbook.xml
+    zip.addFile('xl/workbook.xml', new Buffer(blobs.workbook));
 
-                cb();
-            }, function(cb) {
-                zip.addFile('xl/styles.xml', new Buffer(blobs.styles));
+    // xl/styles.xml
+    zip.addFile('xl/styles.xml', new Buffer(blobs.styles));
 
-                cb();
-            }, function(cb) {
-                zip.addFile('xl/_rels/workbook.xml.rels', new Buffer(blobs.workbookRels));
+    // xl/_rels/workbook.xml.rels
+    zip.addFile('xl/_rels/workbook.xml.rels', new Buffer(blobs.workbookRels));
 
-                cb();
-            }, function(cb) {
-                var buffers = Array.prototype.concat([new Buffer(blobs.sheetHeader(dimensions))], self.sheetBuffers, [new Buffer(blobs.sheetFooter)]);
-                zip.addFile('xl/worksheets/sheet1.xml', Buffer.concat(buffers));
+    // xl/worksheets/sheet1.xml
+    var buffers = Array.prototype.concat([new Buffer(blobs.sheetHeader(dimensions))], this.sheetBuffers, [new Buffer(blobs.sheetFooter)]);
+    zip.addFile('xl/worksheets/sheet1.xml', Buffer.concat(buffers));
 
-                cb();
-            }, function(cb) {
-                zip.writeZip(filename);
+    // write the zip to the filesystem
+    zip.writeZip(filename);
 
-                cb();
-            }
-    ], cb);
+    callback();
 };
 
 XlsxWriter.prototype.addRow = function addRow(obj) {
@@ -105,7 +91,7 @@ XlsxWriter.prototype._addCell = function(value, col) {
     row = this.currentRow;
     cell = this.cell(row, col);
 
-    if (numberRegex.test(value)) {
+    if (NUMBER_REGEX.test(value)) {
         return this.rowBuffer += blobs.numberCell(value, cell);
     } else {
         index = this._lookupString(value);
@@ -115,7 +101,7 @@ XlsxWriter.prototype._addCell = function(value, col) {
 
 XlsxWriter.prototype.dimensions = function dimensions(rows, columns) {
     return 'A1:' + this.cell(rows, columns);
-}
+};
 
 XlsxWriter.prototype.cell = function cell(row, col) {
     var colIndex = '';
@@ -140,7 +126,7 @@ XlsxWriter.prototype.cell = function cell(row, col) {
     }
 
     return colIndex + row;
-}
+};
 
 XlsxWriter.prototype._startRow = function() {
     this.rowBuffer = blobs.startRow(this.currentRow);
