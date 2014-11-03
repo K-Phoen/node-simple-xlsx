@@ -12,24 +12,50 @@ npm install node-simple-xlsx
 # Usage
 
 ```javascript
+var xls = require('node-simple-xlsx'),
+    data = [
+        {
+            'Name': 'Bob',
+            'Location': 'Sweden'
+        },
+        {
+            'Name': 'Alice',
+            'Location': 'France'
+        }
+    ];
+
+xls.write('test.xlsx', data, function (err) {
+    if (err) {
+        console.log('Error: ', err);
+    } else {
+        console.log('Done.');
+    }
+});
+```
+
+# Advanced usage
+
+```javascript
 var XlsxWriter = require('node-simple-xlsx'),
     writer = new XlsxWriter();
 
+writer.setHeaders(['Name', 'Location']);
+
 writer.addRow({
-    'Name': 'Bob',
-    'Location': 'Sweden'
+    'user_name': 'Bob',
+    'loc': 'Sweden'
 });
 writer.addRow({
-    'Name': 'Alice',
-    'Location': 'France'
+    'user_name': 'Alice',
+    'loc': 'France'
 });
 writer.addRow({
-    'Name': 'Bob',
-    'Location': 'France'
+    'user_name': 'Bob',
+    'loc': 'France'
 });
 writer.addRow({
-    'Name': 'Bob',
-    'Location': 'France'
+    'user_name': 'Bob',
+    'loc': 'France'
 });
 
 writer.pack('test.xlsx', function (err) {
