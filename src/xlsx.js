@@ -59,26 +59,45 @@ XlsxWriter.prototype.pack = function(filename, callback) {
     callback();
 };
 
-XlsxWriter.prototype.addRow = function addRow(obj) {
-    if (!this.haveHeader) {
-        this._startRow();
-        var col = 1;
-
-        for (var key in obj) {
-            this._addCell(key, col);
-            this.cellMap.push(key);
-            col += 1;
-        }
-
-        this._endRow();
-        this.haveHeader = true;
+XlsxWriter.prototype.setHeaders = function setHeaders(headers) {
+    if (this.haveHeader) {
+        throw new Error('Headers have already been set');
     }
+
+    var col  = 1,
+        self = this;
 
     this._startRow();
-    for (var col = 0, len = this.cellMap.length; col < len; col += 1) {
-        this._addCell(obj[this.cellMap[col]] || "", col + 1);
+
+    headers.forEach(function(header) {
+        self._addCell(header, col);
+        self.cellMap.push(header);
+        col += 1;
+    });
+
+    this._endRow();
+    this.haveHeader = true;
+};
+
+XlsxWriter.prototype.addRow = function addRow(obj) {
+    if (!this.haveHeader) {
+        var headers = [];
+        for (var key in obj) {
+            headers.push(key);
+        }
+
+        this.setHeaders(headers);
     }
-    return this._endRow();
+
+    var col = 0;
+
+    this._startRow();
+    for (var key in obj) {
+        this._addCell(obj[key] || "", col + 1);
+
+        col += 1;
+    }
+    this._endRow();
 };
 
 XlsxWriter.prototype._addCell = function(value, col) {
