@@ -1,8 +1,8 @@
 {
-  "name": "node-xlsx",
+  "name": "node-simple-xlsx",
   "description": "Simple XLSX writer.",
   "version": "0.0.0",
-  "homepage": "https://github.com/K-Phoen/node-xlsx",
+  "homepage": "https://github.com/K-Phoen/node-simple-xlsx",
   "author": {
     "name": "Kévin Gomez",
     "email": "contact@kevingomez.fr",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/K-Phoen/node-xlsx.git"
+    "url": "git://github.com/K-Phoen/node-simple-xlsx.git"
   },
   "bugs": {
-    "url": "https://github.com/K-Phoen/node-xlsx/issues"
+    "url": "https://github.com/K-Phoen/node-simple-xlsx/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/rubenv/node-xlsx-writer/blob/master/LICENSE"
+      "url": "https://github.com/K-Phoen/node-simple-xlsx/blob/master/LICENSE"
     }
   ],
   "main": "src/xlsx.js",
