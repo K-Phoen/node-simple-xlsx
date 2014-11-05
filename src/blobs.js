@@ -102,7 +102,7 @@ exports = module.exports = {
             '<sheetData>'
     },
 
-    startRow: function (row) { return '<row r="' + row + 1 + '">'; },
+    startRow: function (row) { return '<row r="' + (row + 1) + '">'; },
     endRow: '</row>',
     cell: function (index, cell) { return '<c r="' + cell + '" t="s"><v>' + index + '</v></c>'; },
     numberCell: function (value, cell) { return '<c r="' + cell + '" t="n"><v>' + value + '</v></c>'; },
