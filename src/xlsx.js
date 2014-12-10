@@ -4,7 +4,7 @@ var fs     = require('fs'),
 
     blobs  = require('./blobs');
 
-const NUMBER_REGEX = /^[1-9\.][\d\.]+$/;
+const NUMBER_REGEX = /^\-?[1-9\.][\d\.]*$/;
 
 exports = module.exports = XlsxWriter;
 
